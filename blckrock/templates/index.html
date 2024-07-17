@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wealth Management Model</title>
+  </head>
+  <body>
+    <h1>Wealth Management Model</h1>
+    <form id="portfolio-form">
+      <label for="amount">Amount:</label>
+      <input type="number" id="amount" name="amount" required /><br />
+
+      <label for="years">Years:</label>
+      <input type="number" id="years" name="years" required /><br />
+
+      <label for="roi">ROI:</label>
+      <input type="number" step="0.01" id="roi" name="roi" required /><br />
+
+      <label for="risk">Risk:</label>
+      <input type="number" step="0.01" id="risk" name="risk" required /><br />
+
+      <label for="monthly_income">Monthly Income:</label>
+      <input
+        type="number"
+        id="monthly_income"
+        name="monthly_income"
+        required
+      /><br />
+
+      <label for="savings">Savings:</label>
+      <input type="number" id="savings" name="savings" required /><br />
+
+      <label for="monthly_investment">Monthly Investment:</label>
+      <input
+        type="number"
+        id="monthly_investment"
+        name="monthly_investment"
+        required
+      /><br />
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+      document
+        .getElementById("portfolio-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const data = {
+            amount: document.getElementById("amount").value,
+            years: document.getElementById("years").value,
+            roi: document.getElementById("roi").value,
+            risk: document.getElementById("risk").value,
+            monthly_income: document.getElementById("monthly_income").value,
+            savings: document.getElementById("savings").value,
+            monthly_investment:
+              document.getElementById("monthly_investment").value,
+          };
+
+          fetch("/api/portfolio", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((result) => {
+              document.getElementById("result").innerHTML =
+                "<pre>" + JSON.stringify(result, null, 2) + "</pre>";
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("result").innerHTML =
+                "<div style='color:red;'>Error: " + error.message + "</div>";
+            });
+        });
+    </script>
+  </body>
+</html>
